@@ -1,12 +1,11 @@
-# tests/test_node.py
-
 import unittest
 
 from sapling import Node, traverse_method
 
 
-class TestNode(unittest.TestCase):
-    def create_network(self):
+class Test_Node(unittest.TestCase):
+    @staticmethod
+    def create_network():
         a = Node('a')
         b = Node('b')
         c = Node('c')

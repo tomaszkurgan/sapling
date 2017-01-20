@@ -1,4 +1,3 @@
-# sapling/node.py
 from collections import deque
 
 
@@ -8,8 +7,7 @@ class traverse_method():
 
 
 class Node(object):
-    traverse_method = traverse_method.dfs
-    path_sep = '/'
+    _PATH_SEP = '/'
 
     def __init__(self, name, data=None):
         self.name = name
@@ -39,8 +37,7 @@ class Node(object):
     def __cmp__(self, other):
         return cmp(self.data, other.data)
 
-    def traverse(self, method=None):
-        method = method or self.traverse_method
+    def traverse(self, method=traverse_method.dfs):
         yield self
 
         queue = deque()
@@ -49,9 +46,9 @@ class Node(object):
         while queue:
             n = queue.popleft()
             yield n
-            if method == traverse_method.bfs:   # Breadth-first search
+            if method == traverse_method.bfs:  # Breadth-first search
                 queue.extend(n.children)
-            else:                               # Depth-first search
+            else:  # Depth-first search
                 queue.extendleft(reversed(n.children))
 
     @property
@@ -71,7 +68,7 @@ class Node(object):
             path_elements.append(parent)
             parent = parent.parent
 
-        path = self.root.path_sep.join(reversed([i.name for i in path_elements]))
+        path = self.root._PATH_SEP.join(reversed([i.name for i in path_elements]))
         return path
 
     @property
