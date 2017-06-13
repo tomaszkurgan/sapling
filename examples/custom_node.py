@@ -33,6 +33,9 @@ if __name__ == '__main__':
     t.insert('a/b/h/i/j', force=True)
     t.insert('a/b/h/i/k', force=True)
     t.insert('a/b/h/i/l', force=True)
+    t.insert('a/z', force=True)
+    t.insert('a/zz/e/f/g', force=True)
+    t.insert('a/zz/z/f/g', force=True)
 
     print t.printout()
 
