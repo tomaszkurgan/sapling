@@ -19,8 +19,8 @@ import os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 src_dirs = [
-    os.path.abspath('../..'),
-    os.path.abspath('../../sapling'),
+    os.path.abspath('../../source'),
+    os.path.abspath('../../source/sapling'),
 ]
 print '\n'
 for src_dir in src_dirs:

@@ -12,6 +12,9 @@ node module
     :undoc-members:
     :show-inheritance:
 
+.. autoclass:: TreeBase
+    .. autofunction:: __init__(self, data, printer, node_cls)
+
 tree module
 -------------------
 
