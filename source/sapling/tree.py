@@ -4,40 +4,32 @@ from sapling.node import Node, traverse_method
 _dynamic_tree_classes = {}
 
 
-class TreePrinter(object):
-    def __init__(self, data_repr=None, level_pointer_text='--', level_offset=0):
-        self.data_repr = data_repr
-        self.level_pointer_text = level_pointer_text
-        self.level_offset = level_offset
+def printTree(start_node,
+              vbar='|',
+              level_hbar='|--',
+              level_last_hbar='`--',
+              level_offset=0):
+    def _print(node, level_indent='', next_level_indent='', last_child=False):
+        s = ''
 
-    def printout(self, start_node=None):
-        def _print(node, is_root=True, indent='', next_level_indent='   ', level_end=False):
-            s = ''
-            level_pointer_length = len(self.level_pointer_text)
+        indent_temp = level_indent + (level_last_hbar if last_child else level_hbar)
+        s += indent_temp + ' ' + str(node) if next_level_indent else str(node)
 
-            node_print_template = '{repr}\n' if is_root else '{indent} {repr}\n'
+        level_indent += next_level_indent + ' ' * level_offset
+        level_pointer_length = len(level_hbar)
+        next_level_indent = vbar + ' ' * level_pointer_length
 
-            indent_temp = indent + ('`' if level_end else '|') + self.level_pointer_text
-            representation = self.data_repr(node) if self.data_repr else str(node)
+        for i, child in reversed(list(enumerate(reversed(node.children)))):
+            if not i:
+                next_level_indent = ' ' * (level_pointer_length + 1)
 
-            s += node_print_template.format(indent=indent_temp, repr=representation)
+            s += '\n' + _print(child,
+                               level_indent=level_indent,
+                               next_level_indent=next_level_indent,
+                               last_child=not bool(i))
+        return s
 
-            child_count = len(node.children)
-            indent += '' if is_root else next_level_indent + ' ' * (self.level_offset + 1)
-            next_level_indent = '|' + ' ' * level_pointer_length if child_count > 1 else ' ' * (
-            level_pointer_length + 1)
-
-            for i, child in enumerate(node.children):
-                if i == child_count - 1:
-                    next_level_indent = ' ' * (level_pointer_length + 1)
-                s += _print(child,
-                            is_root=False,
-                            indent=indent,
-                            next_level_indent=next_level_indent,
-                            level_end=(i == child_count - 1))
-            return str(s)
-
-        return _print(start_node)
+    return _print(start_node)
 
 
 class TreeBase(Node):
@@ -91,7 +83,7 @@ class TreeBase(Node):
         else:
             return super(TreeBase, cls).__new__(cls, name, data)
 
-    def __init__(self, name, data=None, printer=TreePrinter(), node_cls=None):
+    def __init__(self, name, data=None, printer=printTree, node_cls=None):
         super(TreeBase, self).__init__(name, data=data)
 
         self.printer = printer
@@ -185,7 +177,7 @@ class TreeBase(Node):
         start_node = start_node or self.root
         printer = printer or self.printer
 
-        return printer.printout(start_node)
+        return printer(start_node)
 
 
 class TreeMeta(type):
@@ -211,3 +203,5 @@ class Tree(TreeBase):
 
 if __name__ == '__main__':
     pass
+
+
